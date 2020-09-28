@@ -97,24 +97,39 @@ answers.addEventListener("click", function (event) {
   if (event.target.matches("button")) {
     var selectedanswer = event.target.getAttribute("data-value");
     console.log(selectedanswer);
-    if (selectedanswer == quizQuestions[currentQuestion].solution) {
+    if (selectedanswer === quizQuestions[currentQuestion].solution) {
       currentQuestion++;
-      if(currentQuestion === quizQuestions.length){
-          console.log("game over" + secondsLeft);
-          var score = secondsLeft;
-          console.log("score" + score);
-          alert("quiz over")
-      }else{ 
-          var answersToDisplay = quizQuestions[currentQuestion].answers;
-        answers.textContent="";
+      console.log("stuck in right answer loop");
+      if (currentQuestion === quizQuestions.length) {
+        var score = secondsLeft;
+        alert("quiz over");
+      } else {
+        var answersToDisplay = quizQuestions[currentQuestion].answers;
+        answers.textContent = "";
         renderAnswers(answersToDisplay);
-        renderQuestions();}
+        renderQuestions();
+      }
+    } else {
+    console.log("wrong answer submitted.");
+    currentQuestion++;
+    if (currentQuestion === quizQuestions.length) {
+      console.log("game over" + secondsLeft);
+      var score = secondsLeft - 18;
+      console.log("score" + score);
+      alert("quiz over");
+    } else {
+      var answersToDisplay = quizQuestions[currentQuestion].answers;
+      secondsLeft = secondsLeft - 18;
+      answers.textContent = "";
+      renderAnswers(answersToDisplay);
+      renderQuestions();
     }
   }
+}
 });
 
 answerOptions.addEventListener("click", function (event) {
   if (event.target.matches("button")) {
-    console.log("You clicked a button");
+    // console.log("You clicked a button");
   }
 });
