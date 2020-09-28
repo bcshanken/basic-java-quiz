@@ -4,13 +4,14 @@ var timeEl = document.getElementById("timer");
 var welcomeContainer = document.getElementById("welcome");
 var answerOptions = document.getElementById("answers");
 var questionText = document.getElementById("question");
-var secondsLeft = 10;
+var secondsLeft = 80;
 var currentQuestion = 0;
 
 var quizQuestions = [
   {
     question: "Commonly used data types DO NOT include:",
     answers: ["1. strings", "2. booleans", "3. alerts", "4. numbers"],
+    solution: "3. alerts",
   },
   {
     question: "The condition in an if/else statement is enclosed within _____.",
@@ -20,6 +21,7 @@ var quizQuestions = [
       "3. parentheses",
       "4. square brackets",
     ],
+    solution: "3. parentheses",
   },
   {
     question: "Arrays in JavaScript can be used to store _____.",
@@ -29,11 +31,14 @@ var quizQuestions = [
       "3. booleans",
       "4. all of the above",
     ],
+    solution: "4. all of the above",
   },
   {
     question:
       "String values must be enclosed within _____ when being assigned to variables.",
     answers: ["1. commas", "2. curly brackets", "3. quotes", "4. parentheses"],
+
+    solution: "4. parentheses",
   },
   {
     question:
@@ -44,6 +49,7 @@ var quizQuestions = [
       "3. for loops",
       "4. consol.log",
     ],
+    solution: "4. consol.log",
   },
 ];
 
@@ -73,17 +79,7 @@ function renderAnswers(array) {
 }
 
 function renderQuestions() {
-    questionText.textContent=quizQuestions[currentQuestion].question;
-
-
-    //   for (var i = 0; i < array.length; i++) {
-//     var quizQuestionText = document.createElement("h2");
-//     // button.setAttribute("class", "btn-btn-info");
-//     quizQuestionText.textContent = quizQuestions[i].question;
-//     quizQuestionText.setAttribute("data-value", quizQuestions[i].question);
-//     questionText.append(quizQuestionText);
-    
-//   }
+  questionText.textContent = quizQuestions[currentQuestion].question;
 }
 
 // Doing it (I dont remember the name of this section)
@@ -94,10 +90,27 @@ quizStart.addEventListener("click", function () {
   console.log(quizQuestions.length);
   var answersToDisplay = quizQuestions[currentQuestion].answers;
   renderAnswers(answersToDisplay);
-//   var questionToDisplay = quizQuestions[currentQuestion].question;
-//   console.log(questionToDisplay);
-//   renderQuestions(questionToDisplay);
-renderQuestions()
+  renderQuestions();
+});
+
+answers.addEventListener("click", function (event) {
+  if (event.target.matches("button")) {
+    var selectedanswer = event.target.getAttribute("data-value");
+    console.log(selectedanswer);
+    if (selectedanswer == quizQuestions[currentQuestion].solution) {
+      currentQuestion++;
+      if(currentQuestion === quizQuestions.length){
+          console.log("game over" + secondsLeft);
+          var score = secondsLeft;
+          console.log("score" + score);
+          alert("quiz over")
+      }else{ 
+          var answersToDisplay = quizQuestions[currentQuestion].answers;
+        answers.textContent="";
+        renderAnswers(answersToDisplay);
+        renderQuestions();}
+    }
+  }
 });
 
 answerOptions.addEventListener("click", function (event) {
