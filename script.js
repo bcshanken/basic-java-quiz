@@ -150,6 +150,7 @@ function renderQuestions() {
   questionText.textContent = quizQuestions[currentQuestion].question;
 }
 function renderYourScore() {
+  YourScoreContainer.style.display = "block";
   quizContainer.style.display = "none";
   timeEl.style.display = "none";
   var highScoreMessage = document.createElement("h2");
