@@ -1,8 +1,11 @@
 // Dom Variables
 var quizStart = document.getElementById("start-quiz");
 var timeEl = document.getElementById("timer");
+var loadScoreBoard = document.getElementById("high-scores")
 var welcomeContainer = document.getElementById("welcome");
 var quizContainer=document.getElementById("quiz");
+var YourScoreContainer=document.getElementById("highScoresSection");
+var scoreBoardEl = document.getElementById("scoreBoard");
 var answerOptions = document.getElementById("answers");
 var questionText = document.getElementById("question");
 var scoreBoardMessage = document.getElementById("scoresMessage");
@@ -10,7 +13,7 @@ var scoreForm = document.getElementById("score-form");
 var secondsLeft = 80;
 var currentQuestion = 0;
 var score = 20;
-var historicalScores= ["bs - 15", "bf - 16"]
+var historicalScores= []
 var userInitialsInput = document.getElementById("score-initials")
 
 
@@ -64,6 +67,31 @@ var quizQuestions = [
 
 // functions
 
+function initialLoad(){
+  var localStoredScores =JSON.parse(localStorage.getItem("historicalScores"))
+
+  if (localStoredScores !== null){
+    historicalScores=localStoredScores;
+  }
+}
+
+function listHighScores() {
+  // code to turn other displays off
+  welcomeContainer.style.display="none";
+  quizContainer.style.display="none";
+  YourScoreContainer.style.display="none";
+  if(historicalScores.length=0){
+    var noScoreMessage = document.createElement("h3")
+    noScoreMessage.textContent="There are no scores to display, refresh to play the game"
+    scoreBoardEl.append(noScoreMessage);
+  }else{
+    console.log("scoreboard!!!")
+    var ScoreMessage = document.createElement("h3")
+    ScoreMessage.textContent="There are scores to display, refresh to play the game"
+    scoreBoardEl.append(ScoreMessage);
+  }
+}
+
 function startTIme() {
   var timerInterval = setInterval(function () {
     secondsLeft--;
@@ -86,11 +114,13 @@ function renderAnswers(array) {
     answerOptions.append(button);
   }
 }
-
+function storeScore(){
+  localStorage.setItem("historicalScores",JSON.stringify(historicalScores))
+}
 function renderQuestions() {
   questionText.textContent = quizQuestions[currentQuestion].question;
 }
-function renderHighScore(){
+function renderYourScore(){
   quizContainer.style.display="none";
   timeEl.style.display="none";
   var highScoreMessage = document.createElement("h2");
@@ -121,6 +151,8 @@ function renderHighScore(){
   var scoreToAddInitials = document.getElementById("score-initials");
   var scoreToAdd = scoreToAddInitials.value.trim() + "- " + score;
   console.log(scoreToAdd);
+  historicalScores.push(scoreToAdd);
+  storeScore();
   })
 
   
@@ -128,6 +160,14 @@ function renderHighScore(){
 }
 
 // Doing it (I dont remember the name of this section)
+initialLoad();
+
+// loading score board off of scoreboard button
+
+loadScoreBoard.addEventListener("click", function(){
+  listHighScores()
+})
+
 quizStart.addEventListener("click", function () {
   welcomeContainer.style.display = "none";
   startTIme();
@@ -153,7 +193,7 @@ answers.addEventListener("click", function (event) {
       // if on the last question CondA1
       if (currentQuestion === quizQuestions.length) {
         var score = secondsLeft;
-        renderHighScore();
+        renderYourScore();
       } else {
         // pulls next question CondA2
         var answersToDisplay = quizQuestions[currentQuestion].answers;
@@ -170,7 +210,7 @@ answers.addEventListener("click", function (event) {
       console.log("game over" + secondsLeft);
       var score = secondsLeft - 18;
       console.log("score" + score);
-      renderHighScore();
+      renderYourScore();
     } else {
       // pulls next question ConB2
       var answersToDisplay = quizQuestions[currentQuestion].answers;
