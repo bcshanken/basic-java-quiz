@@ -221,6 +221,7 @@ answers.addEventListener("click", function (event) {
         // if on the last question CondA1
         if (currentQuestion === quizQuestions.length) {
           var score = secondsLeft;
+          clearInterval();
           renderYourScore();
         } else {
           // pulls next question CondA2
@@ -238,6 +239,7 @@ answers.addEventListener("click", function (event) {
           console.log("game over" + secondsLeft);
           var score = secondsLeft - 18;
           console.log("score" + score);
+          clearInterval();
           renderYourScore();
         } else {
           // pulls next question ConB2
