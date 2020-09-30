@@ -2,10 +2,19 @@
 var quizStart = document.getElementById("start-quiz");
 var timeEl = document.getElementById("timer");
 var welcomeContainer = document.getElementById("welcome");
+var quizContainer=document.getElementById("quiz");
 var answerOptions = document.getElementById("answers");
 var questionText = document.getElementById("question");
+var scoreBoardMessage = document.getElementById("scoresMessage");
+var scoreForm = document.getElementById("score-form");
 var secondsLeft = 80;
 var currentQuestion = 0;
+var score = 20;
+var historicalScores= ["bs - 15", "bf - 16"]
+var userInitialsInput = document.getElementById("score-initials")
+
+
+
 
 var quizQuestions = [
   {
@@ -63,7 +72,7 @@ function startTIme() {
     if (secondsLeft === 0) {
       clearInterval(timerInterval);
       // insert high score function here
-      alert("time up");
+      // renderHighScore();
     }
   }, 1000);
 }
@@ -81,6 +90,42 @@ function renderAnswers(array) {
 function renderQuestions() {
   questionText.textContent = quizQuestions[currentQuestion].question;
 }
+function renderHighScore(){
+  quizContainer.style.display="none";
+  timeEl.style.display="none";
+  var highScoreMessage = document.createElement("h2");
+  var score = secondsLeft;
+  if(score<0){
+    score=0;
+  }
+  highScoreMessage.textContent = "All Done ";
+  scoreBoardMessage.append(highScoreMessage); 
+  var yourScoreMessage = document.createElement("p");
+  yourScoreMessage.textContent= "Your score is " + score;
+  scoreBoardMessage.append(yourScoreMessage);
+  var formLabel =document.createElement("label");
+  formLabel.textContent="Enter your initials: ";
+  formLabel.setAttribute("id","score-form-label");
+  scoreForm.append(formLabel);
+  var initialInput = document.createElement("input");
+  initialInput.setAttribute("type","text");
+  initialInput.setAttribute("id","score-initials");
+  scoreForm.append(initialInput);
+  var button =document.createElement("button");
+  button.setAttribute("class", "btn btn-danger");
+  button.setAttribute("id", "submit")
+  button.textContent="Submit";
+  scoreForm.append(button);
+  button.addEventListener("click",function(event){
+    event.preventDefault();
+  var scoreToAddInitials = document.getElementById("score-initials");
+  var scoreToAdd = scoreToAddInitials.value.trim() + "- " + score;
+  console.log(scoreToAdd);
+  })
+
+  
+
+}
 
 // Doing it (I dont remember the name of this section)
 quizStart.addEventListener("click", function () {
@@ -94,30 +139,40 @@ quizStart.addEventListener("click", function () {
 });
 
 answers.addEventListener("click", function (event) {
+  if(secondsLeft<0){
+    console.log("negative score")
+    renderHighScore;
+  }else{
   if (event.target.matches("button")) {
     var selectedanswer = event.target.getAttribute("data-value");
     console.log(selectedanswer);
+    // selects correct answer CondA
     if (selectedanswer === quizQuestions[currentQuestion].solution) {
       currentQuestion++;
       console.log("stuck in right answer loop");
+      // if on the last question CondA1
       if (currentQuestion === quizQuestions.length) {
         var score = secondsLeft;
-        alert("quiz over");
+        renderHighScore();
       } else {
+        // pulls next question CondA2
         var answersToDisplay = quizQuestions[currentQuestion].answers;
         answers.textContent = "";
         renderAnswers(answersToDisplay);
         renderQuestions();
       }
     } else {
+      // selects wrong answer CondB
     console.log("wrong answer submitted.");
     currentQuestion++;
+    // is on the last question ConB1
     if (currentQuestion === quizQuestions.length) {
       console.log("game over" + secondsLeft);
       var score = secondsLeft - 18;
       console.log("score" + score);
-      alert("quiz over");
+      renderHighScore();
     } else {
+      // pulls next question ConB2
       var answersToDisplay = quizQuestions[currentQuestion].answers;
       secondsLeft = secondsLeft - 18;
       answers.textContent = "";
@@ -125,8 +180,10 @@ answers.addEventListener("click", function (event) {
       renderQuestions();
     }
   }
-}
+}}
 });
+
+
 
 answerOptions.addEventListener("click", function (event) {
   if (event.target.matches("button")) {
